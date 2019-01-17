@@ -1,20 +1,14 @@
 <template>
-  <div id="login" :class="{ recaptcha: recaptcha }">
-    <form @submit="submit">
-      <img :src="logoURL" alt="File Browser">
-      <h1>{{ name }}</h1>
-      <div v-if="error !== ''" class="wrong">{{ error }}</div>
-
-      <input class="input input--block" type="text" v-model="username" :placeholder="$t('login.username')">
-      <input class="input input--block" type="password" v-model="password" :placeholder="$t('login.password')">
-      <input class="input input--block" v-if="createMode" type="password" v-model="passwordConfirm" :placeholder="$t('login.passwordConfirm')" />
-
-      <div v-if="recaptcha" id="recaptcha"></div>
-      <input class="button button--block" type="submit" :value="createMode ? $t('login.signup') : $t('login.submit')">
-
-      <p @click="toggleMode" v-if="signup">{{ createMode ? $t('login.loginInstead') : $t('login.createAnAccount') }}</p>
+<div id="login" :class="{ recaptcha: recaptcha.length > 0 }">
+  <div>
+    <form class="loginAsAdmin" @submit="loginAsAdmin">
+      <input type="submit" :value="$t('login.submit')">
+    </form>
+    <form class="loginAsUser" @submit="loginAsUser">
+      <input type="submit" :value="$t('login.submitD')">
     </form>
   </div>
+</div>
 </template>
 
 <script>
@@ -48,6 +42,16 @@ export default {
   methods: {
     toggleMode () {
       this.createMode = !this.createMode
+    },
+    loginAsAdmin (event) {
+      this.username = 'admin'
+      this.password = 'admin'
+      this.submit(event)
+    },
+    loginAsUser (event) {
+      this.username = 'user1'
+      this.password = 'user1'
+      this.submit(event)
     },
     async submit (event) {
       event.preventDefault()

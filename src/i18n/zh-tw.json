@@ -77,7 +77,8 @@
   "login": {
     "password": "密碼",
     "passwordConfirm": "Password Confirmation",
-    "submit": "登入",
+    "submit": "D槽目錄",
+    "submitD": "G槽目錄",
     "createAnAccount": "Create an account",
     "loginInstead": "Already have an account",
     "passwordsDontMatch": "Passwords don't match",
