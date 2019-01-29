@@ -149,7 +149,7 @@ export default {
       }
     },
     humanTime (time) {
-      return moment(time * 1000).fromNow()
+      return moment(time * 1000).format('YYYY-MM-DD HH:mm:ss')
     },
     buildLink (hash) {
       return `${window.location.origin}${baseURL}/share/${hash}`
