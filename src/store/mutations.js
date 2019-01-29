@@ -85,6 +85,12 @@ const mutations = {
   },
   setProgress: (state, value) => {
     state.progress = value
+  },
+  setConflictFile: (state, value) => {
+    state.conflictFile = value
+  },
+  setConflictFileFromUpload: (state, value) => {
+    state.conflictFileFromUpload = value
   }
 }
 
