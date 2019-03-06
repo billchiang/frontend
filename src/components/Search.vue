@@ -47,7 +47,8 @@
             </div>
           </template>
         </template>
-        <ul v-show="results.length > 0">
+        <listing :class="{ multiple }" v-else-if="isListing"></listing>
+        <!-- <ul v-show="results.length > 0">
           <li v-for="(s,k) in filteredResults" :key="k">
             <router-link @click.native="close" :to="'./' + s.path">
               <i v-if="s.dir" class="material-icons">folder</i>
@@ -55,7 +56,7 @@
               <span>./{{ s.path }}</span>
             </router-link>
           </li>
-        </ul>
+        </ul>-->
       </div>
       <p id="renew">
         <i class="material-icons spin">autorenew</i>
@@ -65,19 +66,23 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from "vuex"
-import url from "@/utils/url"
-import { search } from "@/api"
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
+import url from "@/utils/url";
+import { search, files as api } from "@/api";
+import Listing from "@/components/files/Listing";
 
 var boxes = {
   image: { label: "images", icon: "insert_photo" },
   audio: { label: "music", icon: "volume_up" },
   video: { label: "video", icon: "movie" },
   pdf: { label: "pdf", icon: "picture_as_pdf" }
-}
+};
 
 export default {
   name: "search",
+  components: {
+    Listing
+  },
   data: function() {
     return {
       value: "",
@@ -87,112 +92,128 @@ export default {
       reload: false,
       resultsCount: 50,
       scrollable: null
-    }
+    };
   },
   watch: {
-    show (val, old) {
-      this.active = val === "search"
+    show(val, old) {
+      this.active = val === "search";
 
       if (old === "search" && !this.active) {
         if (this.reload) {
-          this.setReload(true)
+          this.setReload(true);
         }
 
-        document.body.style.overflow = "auto"
-        this.reset()
-        this.value = ''
-        this.active = false
-        this.$refs.input.blur()
+        document.body.style.overflow = "auto";
+        this.reset();
+        this.value = "";
+        this.active = false;
+        this.$refs.input.blur();
       } else if (this.active) {
-        this.reload = false
-        this.$refs.input.focus()
-        document.body.style.overflow = "hidden"
+        this.reload = false;
+        this.$refs.input.focus();
+        document.body.style.overflow = "hidden";
       }
     },
-    value () {
+    value() {
       if (this.results.length) {
-        this.reset()
+        this.reset();
       }
     }
   },
   computed: {
-    ...mapState(["user", "show"]),
+    ...mapState(["user", "show", "req", "oldReq", "multiple", "loading"]),
     ...mapGetters(["isListing"]),
     boxes() {
-      return boxes
+      return boxes;
     },
     isEmpty() {
-      return this.results.length === 0
+      return this.results.length === 0;
     },
     text() {
       if (this.ongoing) {
-        return ""
+        return "";
       }
 
-      return this.value === '' ? this.$t("search.typeToSearch") : this.$t("search.pressToSearch")
+      return this.value === ""
+        ? this.$t("search.typeToSearch")
+        : this.$t("search.pressToSearch");
     },
-    filteredResults () {
-      return this.results.slice(0, this.resultsCount)
+    filteredResults() {
+      return this.results.slice(0, this.resultsCount);
     }
   },
   mounted() {
     window.addEventListener("keydown", event => {
       if (event.keyCode === 27) {
-        this.closeHovers()
+        this.closeHovers();
       }
-    })
+    });
 
-    this.$refs.result.addEventListener('scroll', event => {
-      if (event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight - 100) {
-        this.resultsCount += 50
+    this.$refs.result.addEventListener("scroll", event => {
+      if (
+        event.target.offsetHeight + event.target.scrollTop >=
+        event.target.scrollHeight - 100
+      ) {
+        this.resultsCount += 50;
       }
-    })
+    });
   },
   methods: {
     ...mapMutations(["showHover", "closeHovers", "setReload"]),
+    ...mapActions(["changeReqItems"]),
     open() {
-      this.showHover("search")
+      this.showHover("search");
     },
     close(event) {
-      event.stopPropagation()
-      event.preventDefault()
-      this.closeHovers()
+      event.stopPropagation();
+      event.preventDefault();
+      this.setReload(true);
+      this.closeHovers();
     },
     keyup(event) {
       if (event.keyCode === 27) {
-        this.close(event)
-        return
+        this.close(event);
+        return;
       }
 
-      this.results.length = 0
+      this.results.length = 0;
     },
-    init (string) {
-      this.value = `${string} `
-      this.$refs.input.focus()
+    init(string) {
+      this.value = `${string} `;
+      this.$refs.input.focus();
     },
-    reset () {
-      this.ongoing = false
-      this.resultsCount = 50
-      this.results = []
+    reset() {
+      this.ongoing = false;
+      this.resultsCount = 50;
+      this.results = [];
     },
     async submit(event) {
-      event.preventDefault()
+      event.preventDefault();
 
-      if (this.value === '') {
-        return
+      if (this.value === "") {
+        return;
       }
 
-      let path = this.$route.path
+      let path = this.$route.path;
       if (!this.isListing) {
-        path = url.removeLastDir(path) + "/"
+        path = url.removeLastDir(path) + "/";
       }
 
-      this.ongoing = true
+      this.ongoing = true;
 
+      this.results = await search(path, this.value);
+      let items = [];
+      this.results.forEach(element => {
+        let url = path + element.path;
+        api.fetch(url).then(res => {
+          res.name = res.url;
+          items.push(res);
+        });
+      });
+      this.changeReqItems(items);
 
-      this.results = await search(path, this.value)
-      this.ongoing = false
+      this.ongoing = false;
     }
   }
-}
+};
 </script>

@@ -24,7 +24,7 @@ export function parseToken (token) {
 export async function validateLogin () {
   try {
     if (localStorage.getItem('jwt')) {
-      await renew(localStorage.getItem('jwt'))
+      return
     }
   } catch (_) {
     console.warn('Invalid JWT token in storage') // eslint-disable-line

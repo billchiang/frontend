@@ -323,6 +323,8 @@ export default {
       }
 
       let conflict = false
+      let confilctFile = ""
+      let confilctFileFromUpload = ""
       for (let i = 0; i < files.length; i++) {
         let res = items.findIndex(function hasConflict (element) {
           return (element.name === this)
@@ -330,6 +332,8 @@ export default {
 
         if (res >= 0) {
           conflict = true
+          confilctFile = items[res]
+          confilctFileFromUpload = files[i]
           break
         }
       }
@@ -338,6 +342,8 @@ export default {
         this.handleFiles(files, base)
         return
       }
+      this.$store.commit('setConflictFile', confilctFile),
+      this.$store.commit('setConflictFileFromUpload', confilctFileFromUpload),
 
       this.$store.commit('showHover', {
         prompt: 'replace',

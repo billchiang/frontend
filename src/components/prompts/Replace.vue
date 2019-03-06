@@ -7,7 +7,16 @@
     <div class="card-content">
       <p>{{ $t('prompts.replaceMessage') }}</p>
     </div>
+    
+    <div class="card-content">
+      <p>OLD [{{ conflictFile.name }}] : [{{conflictFile.size}}]</p>
+    </div>
+    
+    <div class="card-content">
+      <p>NEW [{{ conflictFileFromUpload.name }}] : [{{conflictFileFromUpload.size}}]</p>
+    </div>
 
+    
     <div class="card-action">
       <button class="button button--flat button--grey"
         @click="$store.commit('closeHovers')"
@@ -26,6 +35,6 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'replace',
-  computed: mapState(['showConfirm'])
+  computed: mapState(['showConfirm','conflictFile','conflictFileFromUpload'])
 }
 </script>

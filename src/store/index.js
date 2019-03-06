@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import mutations from './mutations'
 import getters from './getters'
+import actions from './actions'
 
 Vue.use(Vuex)
 
@@ -22,12 +23,15 @@ const state = {
   show: null,
   showShell: false,
   showMessage: null,
-  showConfirm: null
+  showConfirm: null,
+  conflictFile: null,
+  conflictFileFromUpload: null
 }
 
 export default new Vuex.Store({
   strict: true,
   state,
   getters,
-  mutations
+  mutations,
+  actions
 })
