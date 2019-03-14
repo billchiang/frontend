@@ -1,6 +1,6 @@
 const actions = {
-  changeReqItems ({ state },items) {
-    state.req.items = items
+  changeReqItems ({ commit },items) {
+    commit('updateSearchRequest',items)
   }
 };
 
