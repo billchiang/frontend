@@ -25,7 +25,8 @@ const state = {
   showMessage: null,
   showConfirm: null,
   conflictFile: null,
-  conflictFileFromUpload: null
+  conflictFileFromUpload: null,
+  searchReq: {}
 }
 
 export default new Vuex.Store({

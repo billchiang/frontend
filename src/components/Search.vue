@@ -154,7 +154,7 @@ export default {
     })
   },
   methods: {
-    ...mapMutations(["showHover", "closeHovers", "setReload"]),
+    ...mapMutations(["showHover", "closeHovers", "setReload","updateSearchRequest"]),
     ...mapActions(["changeReqItems"]),
     open() {
       this.showHover("search")
@@ -197,17 +197,16 @@ export default {
       this.ongoing = true
       
       this.results = await search(path, this.value)
-      console.log("search~~~")
-      let items = []
-      this.results.forEach(element => {
-        let url = path + element.path
-        api.fetch(url).then(res => {
-          res.name = res.url
-          items.push(res)
-        })
-      })
-      console.log("dispatch~~~")
-      this.$store.dispatch("changeReqItems",items);
+      // let items = []
+      // this.results.forEach(element => {
+      //   let url = path + element.path
+      //   api.fetch(url).then(res => {
+      //     res.name = res.url
+      //     items.push(res)
+      //   })
+      // })
+      // console.log(items)
+      this.$store.commit('updateSearchRequest',this.results);
 
       this.ongoing = false
     }
