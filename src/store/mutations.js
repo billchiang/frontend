@@ -76,7 +76,8 @@ const mutations = {
     state.req = value
   },
   updateSearchRequest: (state, value) => {
-    state.req.items = value
+    state.searchReq = value
+    state.req = state.searchReq
   },
   updateClipboard: (state, value) => {
     state.clipboard.key = value.key

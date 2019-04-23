@@ -121,7 +121,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["user", "show", "req", "oldReq", "multiple", "loading"]),
+    ...mapState(["user", "show", "req", "oldReq", "multiple", "loading", "searchReq"]),
     ...mapGetters(["isListing"]),
     boxes() {
       return boxes
@@ -197,15 +197,6 @@ export default {
       this.ongoing = true
       
       this.results = await search(path, this.value)
-      // let items = []
-      // this.results.forEach(element => {
-      //   let url = path + element.path
-      //   api.fetch(url).then(res => {
-      //     res.name = res.url
-      //     items.push(res)
-      //   })
-      // })
-      // console.log(items)
       this.$store.commit('updateSearchRequest',this.results);
 
       this.ongoing = false
